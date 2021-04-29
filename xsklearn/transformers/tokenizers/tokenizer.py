@@ -6,8 +6,8 @@ from sklearn.base import TransformerMixin
 
 
 class Tokenizer(TransformerMixin):  # type: ignore
-    def __call__(self, texts: List[str]) -> List[List[str]]:
-        return self.transform(texts)
+    def __call__(self, text: str) -> List[str]:
+        return self.transform([text])[0]
 
     def fit(self, X: List[str], y: Any = None) -> Tokenizer:
         return self
