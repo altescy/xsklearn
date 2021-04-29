@@ -12,11 +12,13 @@ class TfidfVectorizer(TextVectorizer):
         self,
         max_df: Union[int, float] = 1.0,
         min_df: Union[int, float] = 1,
+        max_features: Optional[int] = None,
         tokenizer: Optional[Callable[[str], List[str]]] = None,
     ) -> None:
         super().__init__(tokenizer)
         self.max_df = max_df
         self.min_df = min_df
+        self.max_features = max_features
         self._document_frequency: Dict[str, int] = {}
         self._token_to_id: Dict[str, int] = {}
         self._id_to_token: Dict[int, str] = {}
@@ -25,7 +27,14 @@ class TfidfVectorizer(TextVectorizer):
         return len(self._token_to_id)
 
     def _fit(self, texts: List[List[str]], y: Any = None) -> TextVectorizer:
+        global_term_frequency: Dict[str, int] = {}
         for tokens in texts:
+            for token in tokens:
+                if token not in global_term_frequency:
+                    global_term_frequency[token] = 0
+
+                global_term_frequency[token] += 1
+
             for token in set(tokens):
                 if token not in self._document_frequency:
                     self._document_frequency[token] = 0
@@ -39,8 +48,20 @@ class TfidfVectorizer(TextVectorizer):
             self.min_df if isinstance(self.min_df, int) else len(texts) * self.min_df
         )
 
+        if self.max_features is not None:
+            top_tokens = [
+                token
+                for token, _ in sorted(
+                    global_term_frequency.items(), key=lambda x: x[1], reverse=True
+                )[: self.max_features]
+            ]
+            self._document_frequency = {
+                token: self._document_frequency[token] for token in top_tokens
+            }
+
         ignored_tokens: List[str] = []
-        for token, df in self._document_frequency.items():
+        for token in self._document_frequency:
+            df = self._document_frequency[token]
             if not (min_df <= df <= max_df):
                 ignored_tokens.append(token)
 
