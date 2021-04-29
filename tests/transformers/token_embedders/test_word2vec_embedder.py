@@ -28,3 +28,9 @@ class TestWord2VecEmbedder:
         embeddings = embedder.transform(self.inputs)
 
         assert len(embeddings) == 2
+
+    def test_fit(self) -> None:
+        embedder = Word2VecEmbedder()
+        embeddings = embedder.fit_transform(self.inputs)
+
+        assert len(embeddings) == 2
