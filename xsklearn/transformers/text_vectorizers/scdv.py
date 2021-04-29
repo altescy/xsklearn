@@ -5,7 +5,8 @@ from typing import Any, Callable, List, Optional, cast
 import numpy
 from sklearn.mixture import GaussianMixture
 
-from xsklearn.transformers.text_vectorizers import TextVectorizer, TfidfVectorizer
+from xsklearn.transformers.text_vectorizers.text_vectorizer import TextVectorizer
+from xsklearn.transformers.text_vectorizers.tfidf_vectorizer import TfidfVectorizer
 from xsklearn.transformers.token_embedders import FastTextEmbedder, TokenEmbedder
 
 
