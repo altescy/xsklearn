@@ -11,17 +11,17 @@ from xsklearn.transformers.token_embedders.token_embedder import TokenEmbedder
 class Word2VecEmbedder(TokenEmbedder):
     def __init__(
         self,
-        pretrained_model: Optional[Union[str, gensim.models.Word2Vec]] = None,
+        model: Optional[Union[str, gensim.models.Word2Vec]] = None,
         min_count: int = 1,
         epochs: int = 10,
         **optional_params: Any,
     ) -> None:
         super().__init__()
 
-        if isinstance(pretrained_model, str):
-            pretrained_model = gensim.models.Word2Vec.load(pretrained_model)
+        if isinstance(model, str):
+            model = gensim.models.Word2Vec.load(model)
 
-        self.model = pretrained_model or gensim.models.Word2Vec(
+        self.model = model or gensim.models.Word2Vec(
             min_count=min_count,
             **optional_params,
         )
