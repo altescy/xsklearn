@@ -22,3 +22,6 @@ class Word2VecEmbedder(TokenEmbedder):
         if token in self.model.wv:
             return cast(numpy.ndarray, self.model.wv[token])
         return None
+
+    def get_output_dim(self) -> int:
+        return int(self.model.vector_size)
