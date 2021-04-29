@@ -9,6 +9,8 @@ python = "^3.8"
 scikit-learn = "^0.24.2"
 gensim = {version = "^4.0.1", optional = true}
 janome = {version = "^0.4.1", optional = true}
+requests = "^2.25.1"
+tqdm = "^4.60.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
