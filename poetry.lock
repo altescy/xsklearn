@@ -554,10 +554,11 @@ python-versions = "*"
 version = "0.2.5"
 
 [extras]
+all = ["gensim"]
 gensim = ["gensim"]
 
 [metadata]
-content-hash = "31469bfc911b5ec9464fc02e5e10945bf9fb62645259ff50f8660c2bb27aef38"
+content-hash = "2b6df556623ef83da0ac326eb4d42995df8aa02935bb105271d6d21821e215fb"
 lock-version = "1.0"
 python-versions = "^3.8"
 
