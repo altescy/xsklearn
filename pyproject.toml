@@ -7,11 +7,15 @@ authors = ["altescy <altescy@fastmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 scikit-learn = "^0.24.2"
+gensim = {version = "^4.0.1", optional = true}
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 python-language-server = "^0.36.2"
 pysen = {version = "^0.9.1", extras = ["lint"]}
+
+[tool.poetry.extras]
+gensim = ["gensim"]
 
 [tool.pysen]
 version = "0.9"
