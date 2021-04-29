@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Dict, List, Optional, cast
+from typing import Any, Callable, List, Optional, cast
 
 import numpy
 from sklearn.mixture import GaussianMixture
@@ -23,8 +23,6 @@ class SCDV(TextVectorizer):
         self.gaussian_mixture = gaussian_mixture or GaussianMixture()
         self.tfidf_vectorizer = tfidf_vectorizer or TfidfVectorizer()
         self.sparcity = sparcity
-        self._id_to_token: Dict[int, str] = {}
-        self._token_to_id: Dict[str, int] = {}
         self._composite_token_vectors: Optional[numpy.ndarray] = None
 
     def get_output_dim(self) -> int:
@@ -47,9 +45,6 @@ class SCDV(TextVectorizer):
         )
         # Shape: (num_unique_tokens, )
         idfs = 1.0 / (document_frequency + 1e-10)
-
-        self._token_to_id = {token: index for index, token in enumerate(unique_tokens)}
-        self._id_to_token = {index: token for index, token in enumerate(unique_tokens)}
 
         num_unique_tokens = len(unique_tokens)
         embedding_size = self.token_embedder.get_output_dim()
@@ -79,10 +74,14 @@ class SCDV(TextVectorizer):
         num_examples = len(texts)
         embedding_size = self.get_output_dim()
 
+        vocabulary = self.tfidf_vectorizer.get_vocabulary()
+
         outputs = numpy.zeros((num_examples, embedding_size))
         for text_index, tokens in enumerate(texts):
             for token in tokens:
-                token_id = self._token_to_id[token]
+                if token not in vocabulary:
+                    continue
+                token_id = self.tfidf_vectorizer.token_to_idex(token)
                 token_vector = self._composite_token_vectors[token_id]
                 outputs[text_index] += token_vector
 
