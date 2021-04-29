@@ -23,6 +23,7 @@ class SCDV(TextVectorizer):
         self.gaussian_mixture = gaussian_mixture or GaussianMixture()
         self.tfidf_vectorizer = tfidf_vectorizer or TfidfVectorizer()
         self.sparcity = sparcity
+        self._sparcity_threshold: Optional[float] = None
         self._composite_token_vectors: Optional[numpy.ndarray] = None
 
     def get_output_dim(self) -> int:
@@ -65,6 +66,9 @@ class SCDV(TextVectorizer):
         composite_token_vectors = numpy.expand_dims(idfs, 1) * composite_token_vectors
 
         self._composite_token_vectors = composite_token_vectors
+        self._sparcity_threshold = self._compute_sparcity_threshold(
+            composite_token_vectors, self.sparcity
+        )
 
         return self
 
@@ -89,12 +93,13 @@ class SCDV(TextVectorizer):
 
         return self._make_sparse(outputs)
 
-    def _make_sparse(self, vectors: numpy.ndarray) -> numpy.ndarray:
+    @staticmethod
+    def _compute_sparcity_threshold(vectors: numpy.ndarray, sparcity: float) -> float:
         a_min = vectors.min(1).mean()
         a_max = vectors.max(1).mean()
         t = 0.5 * (abs(a_min) + abs(a_max))
+        return float(sparcity * t)
 
-        threshold = self.sparcity * t
-
-        outputs = numpy.where(vectors, numpy.abs(vectors) < threshold, 0)
+    def _make_sparse(self, vectors: numpy.ndarray) -> numpy.ndarray:
+        outputs = numpy.where(vectors, numpy.abs(vectors) < self._sparcity_threshold, 0)
         return cast(numpy.ndarray, outputs)
