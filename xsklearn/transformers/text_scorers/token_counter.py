@@ -1,12 +1,10 @@
-from typing import Any, Callable, List, Optional
+from typing import Callable, List, Optional, Union
 
 import numpy
 
 from xsklearn.transformers.text_scorers.text_scorer import TextScorer
-
-
-def _default_tokenizer(text: str) -> List[str]:
-    return text.strip().split()
+from xsklearn.transformers.tokenizers import WhitespaceTokenizer
+from xsklearn.util import tokenize_if_not_yet
 
 
 class TokenCounter(TextScorer):
@@ -15,10 +13,8 @@ class TokenCounter(TextScorer):
         tokenizer: Optional[Callable[[str], List[str]]] = None,
     ) -> None:
         super().__init__()
-        self.tokenizer = tokenizer or _default_tokenizer
+        self.tokenizer = tokenizer or WhitespaceTokenizer()
 
-    def fit(self, X: List[str], y: Any = None) -> TextScorer:
-        return self
-
-    def transform(self, X: List[str]) -> numpy.ndarray:
-        return numpy.array([len(self.tokenizer(text)) for text in X])
+    def transform(self, X: Union[List[str], List[List[str]]]) -> numpy.ndarray:
+        tokenized_text = tokenize_if_not_yet(X, self.tokenizer)
+        return numpy.array([len(tokens) for tokens in tokenized_text])

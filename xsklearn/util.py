@@ -2,7 +2,7 @@ import hashlib
 import logging
 import os
 from pathlib import Path
-from typing import IO, Any, Optional, Union
+from typing import IO, Any, Callable, List, Optional, Union, cast
 
 import requests
 from tqdm import tqdm
@@ -10,6 +10,17 @@ from tqdm import tqdm
 from xsklearn.settings import CACHE_DIRRECTORY
 
 logger = logging.getLogger(__name__)
+
+
+def tokenize_if_not_yet(
+    texts: Union[List[str], List[List[str]]],
+    tokenizer: Callable[[str], List[str]],
+) -> List[List[str]]:
+    if isinstance(texts[0], str):
+        texts = cast(List[str], texts)
+        return [tokenizer(text) for text in texts]
+
+    return cast(List[List[str]], texts)
 
 
 def cached_path(
