@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import re
-from typing import Any, Callable, List, Optional, Union, cast
+from typing import Any, List, Optional, Union, cast
 
 import numpy
 
