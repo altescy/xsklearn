@@ -1,3 +1,4 @@
+from xsklearn.transformers.text_scorers.flesch_scorer import FleschScorer  # noqa: F401
 from xsklearn.transformers.text_scorers.sentence_counter import (  # noqa: F401
     SentenceCouter,
 )
